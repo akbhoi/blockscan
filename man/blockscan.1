@@ -1,0 +1,46 @@
+.TH BLOCKSCAN 1 "July 2026" "1.0.0" "Blockscan Manual"
+.SH NAME
+blockscan \- detect bot-blocking and map crawlable domains
+.SH SYNOPSIS
+.B blockscan
+[\fIOPTIONS\fR] \fI<URL>\fR
+.SH DESCRIPTION
+\fBblockscan\fR is a fast, concurrent CLI tool written in Rust to rapidly determine if a target website blocks automated bot crawling (e.g., via Cloudflare, 403 Forbidden, or Rate Limiting).
+If the website permits crawling, it seamlessly discovers and recursively lists other crawlable links within the same domain.
+.SH OPTIONS
+.TP
+\fB\-d, \-\-depth\fR \fI<DEPTH>\fR
+Maximum crawl depth. Specify 0 for unlimited. (Default: 2)
+.TP
+\fB\-c, \-\-concurrency\fR \fI<CONCURRENCY>\fR
+Maximum concurrent requests limit. (Default: 10)
+.TP
+\fB\-u, \-\-user-agent\fR \fI<USER_AGENT>\fR
+Custom User-Agent string to use for requests. (Default: blockscan/1.0.0 (Bot))
+.TP
+\fB\-j, \-\-json\fR
+Output results in JSON format.
+.TP
+\fB\-\-plain\fR
+Output results in raw plain text format, without UI elements or tables.
+.TP
+\fB\-\-no-color\fR
+Disable colored terminal output.
+.TP
+\fB\-h, \-\-help\fR
+Print help information.
+.TP
+\fB\-V, \-\-version\fR
+Print version information.
+.SH EXAMPLES
+.TP
+Basic scan of a website:
+.B blockscan google.com
+.TP
+Scan with increased concurrency and depth:
+.B blockscan --depth 3 --concurrency 50 google.com
+.TP
+Output results as JSON and pipe to jq:
+.B blockscan google.com --json | jq '.'
+.SH AUTHOR
+Built with Rust.
