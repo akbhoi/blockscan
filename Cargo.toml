@@ -2,6 +2,19 @@
 name = "blockscan"
 version = "1.0.0"
 edition = "2024"
+description = "blockscan is a high-performance CLI security tool built in Rust to analyze website bot-blocking behavior and extract valid, crawlable links."
+license = "MIT"
+repository = "https://github.com/akbhoi/blockscan"
+homepage = "https://github.com/akbhoi/blockscan"
+readme = "README.md"
+authors = ["Ashish Bhoi <ashish.bhoi12@gmail.com>"]
+keywords = ["cli", "crawler", "bot-detection", "security", "scraper"]
+categories = ["command-line-utilities", "web-programming::http-client"]
+exclude = [
+    ".github/",
+    "docs/",
+    "assets/"
+]
 
 [dependencies]
 clap = { version = "4.6.4", features = ["derive"] }

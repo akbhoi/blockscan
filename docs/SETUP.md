@@ -14,7 +14,7 @@ Welcome to the `blockscan` project! This guide will help you set up your local d
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/blockscan.git
+   git clone https://github.com/akbhoi/blockscan.git
    cd blockscan
    ```
 

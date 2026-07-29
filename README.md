@@ -44,7 +44,7 @@ Ensure you have [Rust and Cargo installed](https://rustup.rs/).
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/blockscan.git
+   git clone https://github.com/akbhoi/blockscan.git
    cd blockscan
    ```
 
