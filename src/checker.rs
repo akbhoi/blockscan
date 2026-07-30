@@ -20,7 +20,10 @@ impl Checker {
         Ok(Self { client })
     }
 
-    pub async fn check(&self, url: &str) -> Result<(Status, Option<String>, url::Url), reqwest::Error> {
+    pub async fn check(
+        &self,
+        url: &str,
+    ) -> Result<(Status, Option<String>, url::Url), reqwest::Error> {
         let response = self.client.get(url).send().await?;
         let status = response.status();
         let final_url = response.url().clone();
@@ -45,7 +48,8 @@ impl Checker {
 
 pub fn analyze_html_body(html: &str) -> Status {
     let html_lower = html.to_lowercase();
-    if (html_lower.contains("cloudflare") && (html_lower.contains("challenge") || html_lower.contains("just a moment")))
+    if (html_lower.contains("cloudflare")
+        && (html_lower.contains("challenge") || html_lower.contains("just a moment")))
         || html_lower.contains("verify you are human")
         || html_lower.contains("g-recaptcha")
         || html_lower.contains("hcaptcha")
@@ -64,7 +68,8 @@ mod tests {
 
     #[test]
     fn test_analyze_html_body_allowed() {
-        let body = "<html><body><h1>Welcome to Example</h1><a href='/about'>About</a></body></html>";
+        let body =
+            "<html><body><h1>Welcome to Example</h1><a href='/about'>About</a></body></html>";
         assert_eq!(analyze_html_body(body), Status::Allowed);
     }
 

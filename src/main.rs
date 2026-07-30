@@ -35,11 +35,11 @@ async fn main() {
     spinner.enable_steady_tick(Duration::from_millis(100));
 
     let crawler = Crawler::new(checker, args.depth, args.concurrency);
-    
+
     let completed_count = crawler.completed_count.clone();
     let url_clone = args.url.clone();
     let spinner_clone = spinner.clone();
-    
+
     tokio::spawn(async move {
         loop {
             let count = completed_count.load(std::sync::atomic::Ordering::Relaxed);
@@ -75,8 +75,8 @@ async fn main() {
         }
     } else {
         use colored::Colorize;
-        use comfy_table::{Attribute, Cell, Color, ContentArrangement, Table};
         use comfy_table::presets::UTF8_FULL;
+        use comfy_table::{Attribute, Cell, Color, ContentArrangement, Table};
 
         let mut table = Table::new();
         table
@@ -107,8 +107,16 @@ async fn main() {
             ]);
         }
 
-        eprintln!("🔍 {} {}", "Crawl Results for".bold(), args.url.to_string().cyan());
+        eprintln!(
+            "🔍 {} {}",
+            "Crawl Results for".bold(),
+            args.url.to_string().cyan()
+        );
         println!("{table}");
-        eprintln!("📊 {}: {}", "Total URLs checked".bold(), results.len().to_string().cyan());
+        eprintln!(
+            "📊 {}: {}",
+            "Total URLs checked".bold(),
+            results.len().to_string().cyan()
+        );
     }
 }

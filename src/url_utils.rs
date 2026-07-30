@@ -13,8 +13,12 @@ pub fn normalize_url(base: &Url, relative_or_absolute: &str) -> Option<Url> {
 
 /// Checks if target_url belongs strictly to the exact same top-level domain as base_url (ignoring `www.` prefix).
 pub fn is_same_domain(base_url: &Url, target_url: &Url) -> bool {
-    let base_domain = base_url.domain().map(|d| d.strip_prefix("www.").unwrap_or(d));
-    let target_domain = target_url.domain().map(|d| d.strip_prefix("www.").unwrap_or(d));
+    let base_domain = base_url
+        .domain()
+        .map(|d| d.strip_prefix("www.").unwrap_or(d));
+    let target_domain = target_url
+        .domain()
+        .map(|d| d.strip_prefix("www.").unwrap_or(d));
 
     match (base_domain, target_domain) {
         (Some(b), Some(t)) => b == t,

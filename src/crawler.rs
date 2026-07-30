@@ -1,8 +1,8 @@
 use crate::checker::{Checker, Status};
 use crate::parser::extract_links;
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::{Mutex, Semaphore};
 use url::Url;
 
@@ -68,12 +68,10 @@ impl Crawler {
 
                     let (status, new_links) = match check_res {
                         Ok((s, html_opt, final_url)) => {
-                            let mut extracted = Vec::new();
-                            if s == Status::Allowed {
-                                if let Some(html) = html_opt {
-                                    extracted = extract_links(&html, &final_url);
-                                }
-                            }
+                            let extracted = match (&s, html_opt) {
+                                (Status::Allowed, Some(html)) => extract_links(&html, &final_url),
+                                _ => Vec::new(),
+                            };
                             (s, extracted)
                         }
                         Err(e) => (Status::Error(e.to_string()), Vec::new()),
@@ -94,7 +92,8 @@ impl Crawler {
 
             for handle in handles {
                 if let Ok((current_depth, new_links)) = handle.await {
-                    if self.max_depth == 0 || current_depth < self.max_depth {
+                    let within_depth_limit = self.max_depth == 0 || current_depth < self.max_depth;
+                    if within_depth_limit {
                         for link in new_links {
                             next_queue.push((link, current_depth + 1));
                         }
