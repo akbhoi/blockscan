@@ -1,9 +1,9 @@
 # Track Implementation Plan: Core Bot-Blocking Detection & In-Domain Link Spidering CLI Engine
 
-## Phase 1: URL Normalization & Domain Confinement Engine
-- [ ] Task: Write Unit Tests for URL Normalization and Domain Confinement Logic
-- [ ] Task: Implement URL Normalizer & Strict TLD Filter Module (`src/url_utils.rs`)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 1: URL Normalization & Domain Confinement Engine [checkpoint: a2abdce]
+- [x] Task: Write Unit Tests for URL Normalization and Domain Confinement Logic (a2abdce)
+- [x] Task: Implement URL Normalizer & Strict TLD Filter Module (`src/url_utils.rs`) (a2abdce)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) (a2abdce)
 
 ## Phase 2: Bot-Blocking Detection & HTTP Scanner Module
 - [ ] Task: Write Unit Tests for Detection Signatures (403, 429, WAF/CAPTCHA HTML body)
