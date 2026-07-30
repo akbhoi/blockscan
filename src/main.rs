@@ -2,6 +2,7 @@ mod checker;
 mod cli;
 mod crawler;
 mod parser;
+mod url_utils;
 
 use checker::Checker;
 use clap::Parser;
