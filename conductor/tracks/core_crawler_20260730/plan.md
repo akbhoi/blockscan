@@ -15,6 +15,6 @@
 - [x] Task: Implement Async Crawler Engine with Semaphore Concurrency & Depth Bounds (`src/crawler.rs`) (7108555)
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) (7108555)
 
-## Phase 4: CLI Interface & Tabular Output Integration
-- [ ] Task: Integrate Clap Arguments, Comfy-Table, and Indicatif Spinner (`src/main.rs`)
-- [ ] Task: End-to-End Integration Testing & Phase Verification Checkpoint (Refer to workflow.md)
+## Phase 4: CLI Interface & Tabular Output Integration [checkpoint: 7108555]
+- [x] Task: Integrate Clap Arguments, Comfy-Table, and Indicatif Spinner (`src/main.rs`) (7108555)
+- [x] Task: End-to-End Integration Testing & Phase Verification Checkpoint (Refer to workflow.md) (7108555)
