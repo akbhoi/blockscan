@@ -5,10 +5,10 @@
 - [x] Task: Implement URL Normalizer & Strict TLD Filter Module (`src/url_utils.rs`) (a2abdce)
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) (a2abdce)
 
-## Phase 2: Bot-Blocking Detection & HTTP Scanner Module
-- [ ] Task: Write Unit Tests for Detection Signatures (403, 429, WAF/CAPTCHA HTML body)
-- [ ] Task: Implement HTTP Client & Bot-Blocking Scanner (`src/scanner.rs`)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 2: Bot-Blocking Detection & HTTP Scanner Module [checkpoint: 35a3637]
+- [x] Task: Write Unit Tests for Detection Signatures (403, 429, WAF/CAPTCHA HTML body) (35a3637)
+- [x] Task: Implement HTTP Client & Bot-Blocking Scanner (`src/checker.rs`) (35a3637)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) (35a3637)
 
 ## Phase 3: Recursive Spidering & Concurrency Engine
 - [ ] Task: Write Unit Tests for Concurrent Visited Tracker & Crawler Engine
