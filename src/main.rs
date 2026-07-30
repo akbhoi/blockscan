@@ -71,7 +71,8 @@ async fn main() {
                 checker::Status::Blocked(r) => format!("Blocked ({})", r),
                 checker::Status::Error(e) => format!("Error ({})", e),
             };
-            println!("{}\t{}\t{}", res.depth, res.url, status_str);
+            let parent_str = res.parent_url.as_deref().unwrap_or("-");
+            println!("{}\t{}\t{}\t{}", res.depth, res.url, parent_str, status_str);
         }
     } else {
         use colored::Colorize;
@@ -85,6 +86,7 @@ async fn main() {
             .set_header(vec![
                 Cell::new("Depth").add_attribute(Attribute::Bold),
                 Cell::new("URL").add_attribute(Attribute::Bold),
+                Cell::new("Discovered From (Parent)").add_attribute(Attribute::Bold),
                 Cell::new("Status").add_attribute(Attribute::Bold),
             ]);
 
@@ -100,9 +102,12 @@ async fn main() {
                 status_cell = status_cell.fg(color);
             }
 
+            let parent_str = res.parent_url.as_deref().unwrap_or("-");
+
             table.add_row(vec![
                 Cell::new(res.depth.to_string()),
                 Cell::new(&res.url),
+                Cell::new(parent_str),
                 status_cell,
             ]);
         }

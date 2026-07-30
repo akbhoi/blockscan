@@ -9,6 +9,7 @@ use url::Url;
 #[derive(serde::Serialize, Debug, Clone, PartialEq, Eq)]
 pub struct CrawlResult {
     pub url: String,
+    pub parent_url: Option<String>,
     pub status: Status,
     pub depth: usize,
 }
@@ -33,13 +34,13 @@ impl Crawler {
     }
 
     pub async fn run(&self, start_url: Url) -> Vec<CrawlResult> {
-        let mut queue = vec![(start_url, 0)];
+        let mut queue = vec![(start_url, None, 0)];
 
         while !queue.is_empty() {
             let mut next_queue = Vec::new();
             let mut handles = Vec::new();
 
-            for (url, depth) in queue {
+            for (url, parent_url, depth) in queue {
                 let url_str = url.to_string();
 
                 let mut visited = self.visited.lock().await;
@@ -51,6 +52,7 @@ impl Crawler {
                     url_str.clone(),
                     CrawlResult {
                         url: url_str.clone(),
+                        parent_url: parent_url.clone(),
                         status: Status::Error("Pending".to_string()),
                         depth,
                     },
@@ -85,17 +87,21 @@ impl Crawler {
 
                     completed_count_clone.fetch_add(1, Ordering::Relaxed);
 
-                    (depth, new_links)
+                    (url_str, depth, new_links)
                 });
                 handles.push(handle);
             }
 
             for handle in handles {
-                if let Ok((current_depth, new_links)) = handle.await {
+                if let Ok((parent_url_str, current_depth, new_links)) = handle.await {
                     let within_depth_limit = self.max_depth == 0 || current_depth < self.max_depth;
                     if within_depth_limit {
                         for link in new_links {
-                            next_queue.push((link, current_depth + 1));
+                            next_queue.push((
+                                link,
+                                Some(parent_url_str.clone()),
+                                current_depth + 1,
+                            ));
                         }
                     }
                 }
@@ -104,14 +110,19 @@ impl Crawler {
         }
 
         let visited = self.visited.lock().await;
-        visited
-            .values()
-            .map(|v| CrawlResult {
-                url: v.url.clone(),
-                status: v.status.clone(),
-                depth: v.depth,
-            })
-            .collect()
+        let mut results: Vec<CrawlResult> = visited.values().cloned().collect();
+        results.sort_by(|a, b| {
+            a.depth
+                .cmp(&b.depth)
+                .then_with(|| {
+                    a.parent_url
+                        .as_deref()
+                        .unwrap_or("-")
+                        .cmp(b.parent_url.as_deref().unwrap_or("-"))
+                })
+                .then_with(|| a.url.cmp(&b.url))
+        });
+        results
     }
 }
 
@@ -125,5 +136,45 @@ mod tests {
         let crawler = Crawler::new(checker, 2, 5);
         assert_eq!(crawler.max_depth, 2);
         assert_eq!(crawler.completed_count.load(Ordering::Relaxed), 0);
+    }
+
+    #[test]
+    fn test_crawl_result_sorting() {
+        let mut results = vec![
+            CrawlResult {
+                url: "https://example.com/b".to_string(),
+                parent_url: Some("https://example.com".to_string()),
+                status: Status::Allowed,
+                depth: 1,
+            },
+            CrawlResult {
+                url: "https://example.com/a".to_string(),
+                parent_url: Some("https://example.com".to_string()),
+                status: Status::Allowed,
+                depth: 1,
+            },
+            CrawlResult {
+                url: "https://example.com".to_string(),
+                parent_url: None,
+                status: Status::Allowed,
+                depth: 0,
+            },
+        ];
+
+        results.sort_by(|a, b| {
+            a.depth
+                .cmp(&b.depth)
+                .then_with(|| {
+                    a.parent_url
+                        .as_deref()
+                        .unwrap_or("-")
+                        .cmp(b.parent_url.as_deref().unwrap_or("-"))
+                })
+                .then_with(|| a.url.cmp(&b.url))
+        });
+
+        assert_eq!(results[0].url, "https://example.com");
+        assert_eq!(results[1].url, "https://example.com/a");
+        assert_eq!(results[2].url, "https://example.com/b");
     }
 }
