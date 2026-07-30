@@ -10,10 +10,10 @@
 - [x] Task: Implement HTTP Client & Bot-Blocking Scanner (`src/checker.rs`) (35a3637)
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) (35a3637)
 
-## Phase 3: Recursive Spidering & Concurrency Engine
-- [ ] Task: Write Unit Tests for Concurrent Visited Tracker & Crawler Engine
-- [ ] Task: Implement Async Crawler Engine with Semaphore Concurrency & Depth Bounds (`src/crawler.rs`)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 3: Recursive Spidering & Concurrency Engine [checkpoint: 7108555]
+- [x] Task: Write Unit Tests for Concurrent Visited Tracker & Crawler Engine (7108555)
+- [x] Task: Implement Async Crawler Engine with Semaphore Concurrency & Depth Bounds (`src/crawler.rs`) (7108555)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) (7108555)
 
 ## Phase 4: CLI Interface & Tabular Output Integration
 - [ ] Task: Integrate Clap Arguments, Comfy-Table, and Indicatif Spinner (`src/main.rs`)
