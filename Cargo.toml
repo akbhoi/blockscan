@@ -1,6 +1,6 @@
 [package]
 name = "blockscan"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2024"
 description = "blockscan is a high-performance CLI security tool built in Rust to analyze website bot-blocking behavior and extract valid, crawlable links."
 license = "MIT"

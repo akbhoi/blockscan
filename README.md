@@ -93,7 +93,7 @@ blockscan example.com --plain | grep "Allowed"
 | `<URL>` | The target URL to scan (Required). | - |
 | `-d, --depth <DEPTH>` | Maximum crawl depth (`0` for unlimited). | `2` |
 | `-c, --concurrency <C>` | Maximum concurrent requests limit. | `10` |
-| `-u, --user-agent <UA>` | Custom User-Agent string for requests. | `blockscan/1.0.0 (Bot)` |
+| `-u, --user-agent <UA>` | Custom User-Agent string for requests. | `blockscan/1.1.0 (Bot)` |
 | `-j, --json` | Output results in JSON format. | `false` |
 | `--plain` | Output results in raw plain text format (no UI). | `false` |
 | `--no-color` | Disable colored terminal output. | `false` |

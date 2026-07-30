@@ -54,7 +54,7 @@ pub struct Args {
     pub concurrency: usize,
 
     /// Custom HTTP User-Agent header string sent during crawling requests.
-    #[arg(short, long, default_value = "blockscan/1.0.0 (Bot)")]
+    #[arg(short, long, default_value = "blockscan/1.1.0 (Bot)")]
     pub user_agent: String,
 
     /// Enable verbose diagnostic logging (outputs real-time HTTP requests, response statuses, and extracted link counts to STDERR).
