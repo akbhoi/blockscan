@@ -6,7 +6,7 @@ use std::sync::Arc;
 use tokio::sync::{Mutex, Semaphore};
 use url::Url;
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, Debug, Clone, PartialEq, Eq)]
 pub struct CrawlResult {
     pub url: String,
     pub status: Status,
@@ -84,7 +84,7 @@ impl Crawler {
                         res.status = status;
                     }
                     drop(visited);
-                    
+
                     completed_count_clone.fetch_add(1, Ordering::Relaxed);
 
                     (depth, new_links)
@@ -113,5 +113,18 @@ impl Crawler {
                 depth: v.depth,
             })
             .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_crawler_initialization() {
+        let checker = Checker::new("test-agent/1.0").unwrap();
+        let crawler = Crawler::new(checker, 2, 5);
+        assert_eq!(crawler.max_depth, 2);
+        assert_eq!(crawler.completed_count.load(Ordering::Relaxed), 0);
     }
 }
