@@ -8,3 +8,6 @@
 
 - [x] **Track: Parent-Child Link Tracking & Deterministic Result Sorting**
   *Link: [index.md](./tracks/link_hierarchy_20260730/index.md)*
+
+- [ ] **Track: Verbose Logging Mode (-v, --verbose)**
+  *Link: [index.md](./tracks/verbose_mode_20260730/index.md)*
