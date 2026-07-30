@@ -1,3 +1,4 @@
+use crate::url_utils::{is_same_domain, normalize_url};
 use scraper::{Html, Selector};
 use url::Url;
 
@@ -7,22 +8,14 @@ pub fn extract_links(html: &str, base_url: &Url) -> Vec<Url> {
     let mut links = Vec::new();
 
     for element in document.select(&selector) {
-        if let Some(href) = element.value().attr("href") {
-            if let Ok(mut url) = base_url.join(href) {
-                // Remove fragments to avoid treating same page as different URLs
-                url.set_fragment(None);
+        let valid_url = element
+            .value()
+            .attr("href")
+            .and_then(|href| normalize_url(base_url, href))
+            .filter(|url| is_same_domain(base_url, url));
 
-                // Keep only http/https links
-                if url.scheme() == "http" || url.scheme() == "https" {
-                    // Check domain match, ignoring "www." prefix
-                    let u_domain = url.domain().map(|d| d.strip_prefix("www.").unwrap_or(d));
-                    let b_domain = base_url.domain().map(|d| d.strip_prefix("www.").unwrap_or(d));
-                    
-                    if u_domain.is_some() && u_domain == b_domain {
-                        links.push(url);
-                    }
-                }
-            }
+        if let Some(url) = valid_url {
+            links.push(url);
         }
     }
     links

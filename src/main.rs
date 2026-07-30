@@ -2,6 +2,7 @@ mod checker;
 mod cli;
 mod crawler;
 mod parser;
+mod url_utils;
 
 use checker::Checker;
 use clap::Parser;
@@ -33,12 +34,12 @@ async fn main() {
     spinner.set_message(format!("Crawling {}...", args.url));
     spinner.enable_steady_tick(Duration::from_millis(100));
 
-    let crawler = Crawler::new(checker, args.depth, args.concurrency);
-    
+    let crawler = Crawler::new(checker, args.depth, args.concurrency, args.verbose);
+
     let completed_count = crawler.completed_count.clone();
     let url_clone = args.url.clone();
     let spinner_clone = spinner.clone();
-    
+
     tokio::spawn(async move {
         loop {
             let count = completed_count.load(std::sync::atomic::Ordering::Relaxed);
@@ -70,12 +71,13 @@ async fn main() {
                 checker::Status::Blocked(r) => format!("Blocked ({})", r),
                 checker::Status::Error(e) => format!("Error ({})", e),
             };
-            println!("{}\t{}\t{}", res.depth, res.url, status_str);
+            let parent_str = res.parent_url.as_deref().unwrap_or("-");
+            println!("{}\t{}\t{}\t{}", res.depth, res.url, parent_str, status_str);
         }
     } else {
         use colored::Colorize;
-        use comfy_table::{Attribute, Cell, Color, ContentArrangement, Table};
         use comfy_table::presets::UTF8_FULL;
+        use comfy_table::{Attribute, Cell, Color, ContentArrangement, Table};
 
         let mut table = Table::new();
         table
@@ -84,6 +86,7 @@ async fn main() {
             .set_header(vec![
                 Cell::new("Depth").add_attribute(Attribute::Bold),
                 Cell::new("URL").add_attribute(Attribute::Bold),
+                Cell::new("Discovered From (Parent)").add_attribute(Attribute::Bold),
                 Cell::new("Status").add_attribute(Attribute::Bold),
             ]);
 
@@ -99,15 +102,26 @@ async fn main() {
                 status_cell = status_cell.fg(color);
             }
 
+            let parent_str = res.parent_url.as_deref().unwrap_or("-");
+
             table.add_row(vec![
                 Cell::new(res.depth.to_string()),
                 Cell::new(&res.url),
+                Cell::new(parent_str),
                 status_cell,
             ]);
         }
 
-        eprintln!("🔍 {} {}", "Crawl Results for".bold(), args.url.to_string().cyan());
+        eprintln!(
+            "🔍 {} {}",
+            "Crawl Results for".bold(),
+            args.url.to_string().cyan()
+        );
         println!("{table}");
-        eprintln!("📊 {}: {}", "Total URLs checked".bold(), results.len().to_string().cyan());
+        eprintln!(
+            "📊 {}: {}",
+            "Total URLs checked".bold(),
+            results.len().to_string().cyan()
+        );
     }
 }
