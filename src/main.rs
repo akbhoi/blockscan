@@ -34,7 +34,7 @@ async fn main() {
     spinner.set_message(format!("Crawling {}...", args.url));
     spinner.enable_steady_tick(Duration::from_millis(100));
 
-    let crawler = Crawler::new(checker, args.depth, args.concurrency);
+    let crawler = Crawler::new(checker, args.depth, args.concurrency, args.verbose);
 
     let completed_count = crawler.completed_count.clone();
     let url_clone = args.url.clone();

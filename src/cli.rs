@@ -29,8 +29,8 @@ EXAMPLES:
   # Pipe machine-readable JSON output into jq:
   blockscan example.com --json | jq '.[] | select(.status == "Allowed")'
 
-  # Pipe plain text output into grep:
-  blockscan example.com --plain | grep "Allowed"
+  # Enable verbose diagnostic logging to STDERR:
+  blockscan example.com -v
 "#;
 
 #[derive(Parser, Debug, Clone)]
@@ -56,6 +56,10 @@ pub struct Args {
     /// Custom HTTP User-Agent header string sent during crawling requests.
     #[arg(short, long, default_value = "blockscan/1.0.0 (Bot)")]
     pub user_agent: String,
+
+    /// Enable verbose diagnostic logging (outputs real-time HTTP requests, response statuses, and extracted link counts to STDERR).
+    #[arg(short, long)]
+    pub verbose: bool,
 
     /// Output crawl results in structured, pretty-printed JSON format to STDOUT.
     #[arg(short, long)]
@@ -91,6 +95,15 @@ mod tests {
         assert!(help_text.contains("EXAMPLES"));
         assert!(help_text.contains("--json"));
         assert!(help_text.contains("--plain"));
-        assert!(help_text.contains("--no-color"));
+        assert!(help_text.contains("--verbose"));
+    }
+
+    #[test]
+    fn test_cli_verbose_flag_parsing() {
+        let args = Args::parse_from(["blockscan", "example.com", "-v"]);
+        assert!(args.verbose);
+
+        let args_long = Args::parse_from(["blockscan", "example.com", "--verbose"]);
+        assert!(args_long.verbose);
     }
 }

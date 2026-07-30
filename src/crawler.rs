@@ -20,16 +20,18 @@ pub struct Crawler {
     semaphore: Arc<Semaphore>,
     visited: Arc<Mutex<HashMap<String, CrawlResult>>>,
     pub completed_count: Arc<AtomicUsize>,
+    pub verbose: bool,
 }
 
 impl Crawler {
-    pub fn new(checker: Checker, max_depth: usize, concurrency: usize) -> Self {
+    pub fn new(checker: Checker, max_depth: usize, concurrency: usize, verbose: bool) -> Self {
         Self {
             checker: Arc::new(checker),
             max_depth,
             semaphore: Arc::new(Semaphore::new(concurrency)),
             visited: Arc::new(Mutex::new(HashMap::new())),
             completed_count: Arc::new(AtomicUsize::new(0)),
+            verbose,
         }
     }
 
@@ -63,9 +65,15 @@ impl Crawler {
                 let semaphore = self.semaphore.clone();
                 let visited_map = self.visited.clone();
                 let completed_count_clone = self.completed_count.clone();
+                let verbose = self.verbose;
 
                 let handle = tokio::spawn(async move {
                     let _permit = semaphore.acquire().await.unwrap();
+
+                    if verbose {
+                        eprintln!("[VERBOSE] [Depth {}] Fetching URL: {}", depth, url_str);
+                    }
+
                     let check_res = checker.check(&url_str).await;
 
                     let (status, new_links) = match check_res {
@@ -78,6 +86,16 @@ impl Crawler {
                         }
                         Err(e) => (Status::Error(e.to_string()), Vec::new()),
                     };
+
+                    if verbose {
+                        eprintln!(
+                            "[VERBOSE] [Depth {}] Response for {}: status={:?}, links_found={}",
+                            depth,
+                            url_str,
+                            status,
+                            new_links.len()
+                        );
+                    }
 
                     let mut visited = visited_map.lock().await;
                     if let Some(res) = visited.get_mut(&url_str) {
@@ -133,8 +151,9 @@ mod tests {
     #[tokio::test]
     async fn test_crawler_initialization() {
         let checker = Checker::new("test-agent/1.0").unwrap();
-        let crawler = Crawler::new(checker, 2, 5);
+        let crawler = Crawler::new(checker, 2, 5, false);
         assert_eq!(crawler.max_depth, 2);
+        assert!(!crawler.verbose);
         assert_eq!(crawler.completed_count.load(Ordering::Relaxed), 0);
     }
 
