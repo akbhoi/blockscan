@@ -5,3 +5,6 @@
 
 - [x] **Track: CLIG-Compliant CLI Help & Documentation Enhancement**
   *Link: [index.md](./tracks/clig_help_20260730/index.md)*
+
+- [ ] **Track: Parent-Child Link Tracking & Deterministic Result Sorting**
+  *Link: [index.md](./tracks/link_hierarchy_20260730/index.md)*
